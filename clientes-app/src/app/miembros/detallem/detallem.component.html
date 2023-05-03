@@ -1,0 +1,106 @@
+<div *ngIf="modalService.modal" class="abrir-modal animacion fadeIn">
+  <div class="modal" tabindex="-1" style="display:block;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ titulo }}</h5>
+          <button type="button" (click)="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm">
+
+                <ul *ngIf="miembro" class="list-group text-dark mb-3">
+                  <li class="list-group-item active">{{ miembro.nombre }} {{ miembro.apellido }}</li>
+                  <li class="list-group-item">{{ miembro.cargo }} - {{ miembro.proyecto }}</li>
+                  <li class="list-group-item">{{ miembro.email }}</li>
+                  <li class="list-group-item">{{ miembro.createAt | date:"fullDate" }}</li>
+                  <!-- <li class="list-group-item">{{ miembro.createAt }}</li> -->
+                </ul>
+
+                <div class="input-group mb-3" *ngIf="authService.hasRole('ROLE_ADMIN')">
+                  <div class="custom-file">
+                    <input (change)="seleccionarFoto($event)" type="file" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
+                    <label class="custom-file-label" for="inputGroupFile04">Seleccionar foto</label>
+                  </div>
+                  <div class="input-group-append">
+                    <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>
+                  </div>
+                </div>
+                <div *ngIf="progreso > 0" class="progress" style="height: 40px; margin-bottom: 1em;">
+                  <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{width:progreso+'%'}" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                    {{progreso}}%
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <img *ngIf="miembro?.foto" src="http://localhost:8090/api/uploads/img/{{miembro.foto}}" alt="{{miembro.foto}}" class="img-thumbnail rounded">
+              </div>
+            </div>
+            <div class="row" *ngIf="authService.hasRole('ROLE_ADMIN')">
+              <button type="button" class="btn btn-success btn-sm" [routerLink]="['/tareas/form', miembro.id]">Crear tarea</button>
+            </div>
+            <div class="row">
+              <div class="alert alert-info my-4" *ngIf="miembro.tareas.length == 0 && miembro.subtareas.length == 0">
+                No hay tareas asignadas para el miembro {{miembro.nombre}} {{miembro.apellido}}
+              </div>
+              <table class="table table-bordered table-striped my-4" *ngIf="miembro.tareas.length > 0 || miembro.subtareas.length > 0">
+                <thead>
+                  <tr>
+                    <!-- <th>Id tarea</th> -->
+                    <th>Descripcion</th>
+                    <th>Tiempo estimado</th>
+                    <th>Duracion real</th>
+                    <th>Detalle</th>
+                    <th>Estado</th>
+                    <th *ngIf="authService.hasRole('ROLE_ADMIN')">Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let tarea of miembro.tareas">
+                    <!-- <td>{{tarea.id}}</td> -->
+                    <td>{{tarea.descripcion}}</td>
+                    <td>{{tarea.tiempo_estimado}}</td>
+                    <td>{{tarea.duracion}}</td>
+                    <td><button class="btn btn-primary btn-sm" type="button"
+                      [routerLink]="['/tareas', tarea.id]">
+                      ver
+                    </button></td>
+                    <td>
+                      <h2 class="float-right">
+                        <span class="badge badge-secondary">{{tarea.estado}}</span>
+                      </h2>
+                    </td>
+                    <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button class="btn btn-danger btn-sm" type="button" (click)="delete(tarea)">eliminar</button></td>
+                  </tr>
+                  <tr *ngFor="let subtarea of miembro.subtareas">
+                    <!-- <td>{{subtarea.id}}</td> -->
+                    <td>{{subtarea.descripcion}}</td>
+                    <td>{{subtarea.tiempo_estimado}}</td>
+                    <td>{{subtarea.duracion}}</td>
+                    <td><button class="btn btn-primary btn-sm" type="button"
+                      [routerLink]="['/tareas/subtareas', subtarea.id]">
+                      ver
+                    </button></td>
+                    <td>
+                      <h2 class="float-right">
+                        <span class="badge badge-secondary">{{subtarea.estado}}</span>
+                      </h2>
+                    </td>
+                    <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button class="btn btn-danger btn-sm" type="button" (click)="deleteSubTarea(subtarea)">eliminar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrarModal()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

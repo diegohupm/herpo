@@ -1,0 +1,54 @@
+<div class="card bg-light">
+  <div class="card-header">{{titulo}}</div>
+  <div class="card-body">
+    <h4 class="card-title">
+      <a [routerLink]="['/miembros']" class="btn btn-secondary">&laquo; Volver</a>
+    </h4>
+
+    <form #tareaForm="ngForm">
+      <div class="form-group row" *ngIf="tarea.miembro">
+        <label for="miembro" class="col-sm-2 col-form-label">Miembro</label>
+        <div class="col-sm-6">
+          <input type="text" name="miembro" value="{{tarea.miembro.nombre}} {{tarea.miembro.apellido}}" class="form-control" disabled>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
+        <div class="col-sm-6">
+          <input type="text" name="descripcion" [(ngModel)]="tarea.descripcion" class="form-control" required #descripcion="ngModel">
+          <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+            <div *ngIf="descripcion.errors.required">
+              Descripcion es requerido
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="observacion" class="col-sm-2 col-form-label">Observación</label>
+        <div class="col-sm-6">
+          <textarea name="observacion" [(ngModel)]="tarea.observacion" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="tiempo_estimado" class="col-sm-2 col-form-label">Tiempo estimado</label>
+        <div class="col-sm-6">
+          <input type="number" name="tiempoEstimado" [(ngModel)]="tarea.tiempo_estimado" class="form-control" required #tiempoEstimado="ngModel" required maxlength="2">
+          <div class="alert alert-danger" *ngIf="tiempoEstimado.invalid && (tiempoEstimado.dirty || tiempoEstimado.touched)">
+            <div *ngIf="tiempoEstimado.errors.required">
+              Tiempo estimado es requerido
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <input type="submit" (click)="create(tareaForm)" value="Crear tarea"  [disabled]="!tareaForm.form.valid" class="btn btn-secondary">
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

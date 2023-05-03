@@ -1,0 +1,24 @@
+<ul *ngIf="paginas?.length > 0" class="pagination">
+
+  <li [ngClass]="paginadorm.first?'disabled page-item':'page-item'" *ngIf="paginadorm.number > 0">
+    <a class="page-link" [routerLink]="['/miembros/page', 0]">&laquo;</a>
+  </li>
+
+  <li class="page-item" *ngIf="paginadorm.number > 0">
+    <a class="page-link" [routerLink]="['/miembros/page', paginadorm.number-1]">&lt;</a>
+  </li>
+
+  <li class="page-item" *ngFor="let pagina of paginas" [ngClass]="pagina-1 == paginadorm.number?'active':''">
+    <span class="page-link" *ngIf="pagina-1 == paginadorm.number">{{pagina}}</span>
+    <a class="page-link" *ngIf="pagina-1 != paginadorm.number" [routerLink]="['/miembros/page', pagina-1]">{{pagina}}</a>
+  </li>
+
+  <li class="page-item" *ngIf="paginadorm.number<paginadorm.totalPages-1">
+    <a class="page-link" [routerLink]="['/miembros/page', paginadorm.number+1]">&gt;</a>
+  </li>
+
+  <li [ngClass]="paginadorm.last?'disabled page-item':'page-item'" *ngIf="paginadorm.number<paginadorm.totalPages-1">
+    <a class="page-link" [routerLink]="['/miembros/page', paginadorm.totalPages-1]">&raquo;</a>
+  </li>
+
+</ul>

@@ -1,0 +1,71 @@
+<detallem-miembro *ngIf="miembroSeleccionado" [miembro] ="miembroSeleccionado"></detallem-miembro>
+
+<div class="card border-primary mb-3">
+  <div class="card-header">Equipo</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Miembros del equipo</h5>
+    <div class="my-2 text-left">
+      <button *ngIf="authService.hasRole('ROLE_ADMIN')" class="btn btn-rounded btn-primary" type="button" [routerLink]="['/miembros/form']">
+        Crear Miembro
+      </button>
+    </div>
+    <div *ngIf="miembros?.length == 0" class="alert alert-info">
+      No hay registros en la base de datos.
+    </div>
+    <table class="table table-bordered table-striped" *ngIf="miembros?.length>0">
+      <thead>
+        <tr>
+          <th *ngIf="authService.hasRole('ROLE_USER')">#</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <!-- <th>email</th> -->
+          <!-- <th>fecha</th> -->
+          <!-- <th>tarea</th> -->
+          <th *ngIf="authService.hasRole('ROLE_USER')">Proyecto</th>
+          <th *ngIf="authService.hasRole('ROLE_USER')">Cargo</th>
+          <th *ngIf="authService.hasRole('ROLE_USER')">Nº Tareas</th>
+          <th *ngIf="authService.hasRole('ROLE_BOSS')">Asignar tarea</th>
+          <!-- <th *ngIf="authService.hasRole('ROLE_ADMIN')">crear factura</th> -->
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">Editar</th>
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">Eliminar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let miembro of miembros">
+          <td *ngIf="authService.hasRole('ROLE_USER')"><img (click)="abrirModal(miembro)" *ngIf="miembro?.foto"
+            src="http://localhost:8090/api/uploads/img/{{miembro.foto}}" alt="{{miembro.foto}}" class="img-thumbnail rounded"
+            style="width:64px; cursor: pointer;">
+
+            <img (click)="abrirModal(miembro)" *ngIf="!miembro?.foto"
+              src="http://localhost:8090/images/no-usuario.png" alt="Sin foto" class="img-thumbnail rounded"
+              style="width:64px; cursor: pointer;">
+            </td>
+          <td>{{ miembro.nombre | uppercase }}</td>
+          <td>{{ miembro.apellido | uppercase }}</td>
+          <!-- <td>{{ miembro.apellido | uppercase }}</td> -->
+          <!-- <td>{{ miembro.email }}</td> -->
+          <!-- <td>{{ miembro.createAt }}</td> -->
+          <!-- <td *ngIf="miembro.tarea!==null? miembro.tarea.estado!=='Hecho': false">{{ miembro.tarea.descripcion }}</td> -->
+          <!-- <td *ngIf="!miembro.tarea || miembro.tarea.estado==='Hecho'">Sin tarea asignada</td> -->
+          <!-- <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+            <button type="button" name="asignar" [routerLink]="['/tareas/form', miembro.id]" class="btn btn-success btn-sm"
+            [disabled]="miembro.tarea!==null? miembro.tarea.estado!=='Hecho': false">Asignar tarea</button>
+          </td> -->
+          <td *ngIf="authService.hasRole('ROLE_USER')">{{ miembro.proyecto }}</td>
+          <td *ngIf="authService.hasRole('ROLE_USER')">{{ miembro.cargo }}</td>
+          <td *ngIf="authService.hasRole('ROLE_USER')">{{ miembro.tareas.length + miembro.subtareas.length }}</td>
+          <td *ngIf="authService.hasRole('ROLE_BOSS')">
+            <button type="button" class="btn btn-success btn-sm" [routerLink]="['/tareas/form', miembro.id]">Asignar tarea</button>
+          </td>
+          <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+            <button type="button" name="editar" [routerLink]="['/miembros/form', miembro.id]" class="btn btn-primary btn-sm">Editar</button>
+          </td>
+          <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+            <button type="button" name="eliminar" (click)='delete(miembro)' class="btn btn-danger btn-sm">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginatorm-nav *ngIf="paginadorm" [paginadorm]="paginadorm"></paginatorm-nav>
+  </div>
+</div>
